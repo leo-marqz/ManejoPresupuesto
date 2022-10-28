@@ -8,17 +8,12 @@ namespace ManejoPresupuesto.Controllers
 {
     public class TiposCuentasController : Controller
     {
-        private readonly string cadena;
-        public TiposCuentasController(IConfiguration configuration)
+        public TiposCuentasController()
         {
-            this.cadena = configuration.GetConnectionString("DefaultConnection");
+
         }
         public IActionResult Crear()
         {
-            using(var con = new SqlConnection(cadena))
-            {
-                var query = con.Query("SELECT 1").FirstOrDefault();
-            }
             return View();
         }
 
