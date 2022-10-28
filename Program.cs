@@ -7,6 +7,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRouting(router => router.LowercaseUrls = true);
 
 builder.Services.AddTransient<IRepositorioTiposCuentas, RepositorioTiposCuentas>();
+builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
 
 var app = builder.Build();
 
