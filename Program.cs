@@ -1,8 +1,12 @@
+using ManejoPresupuesto.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRouting(router => router.LowercaseUrls = true);
+
+builder.Services.AddTransient<IRepositorioTiposCuentas, RepositorioTiposCuentas>();
 
 var app = builder.Build();
 
