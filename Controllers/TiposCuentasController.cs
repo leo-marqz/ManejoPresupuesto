@@ -98,5 +98,48 @@ namespace ManejoPresupuesto.Controllers
             return Ok();
         }
 
+        public async Task<IActionResult>Eliminar(int id)
+        {
+            var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
+            var tipoCuenta = await this.repositorioTiposCuentas.ObtenerPorId(id, usuarioId);
+            if(tipoCuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+            return View(tipoCuenta);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BorrarTipoCuenta(int id)
+        {
+            var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
+            var tipoCuenta = await this.repositorioTiposCuentas.ObtenerPorId(id, usuarioId);
+            if (tipoCuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+            await this.repositorioTiposCuentas.Eliminar(id);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Ordenar([FromBody] int[] ids)
+        {
+            var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
+            var tiposCuentas = await this.repositorioTiposCuentas.Obtener(usuarioId);
+            var idsTiposCuentas = tiposCuentas.Select(tc => tc.Id);
+            var idsTiposCuentasNoPertenecenAlUsuario = ids.Except(idsTiposCuentas).ToList();
+            if(idsTiposCuentasNoPertenecenAlUsuario.Count > 0)
+            {
+                return Forbid(); //prohibido
+            }
+            var tiposCuentasOrdenados = ids.Select((valor, indice) =>
+            {
+                return new TipoCuenta() { Id = valor, Orden = indice + 1 };
+            }).AsEnumerable();
+            await this.repositorioTiposCuentas.Ordenar(tiposCuentasOrdenados);
+            return Ok();
+        }
+
     }
 }
