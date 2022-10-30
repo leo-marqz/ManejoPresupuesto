@@ -3,3 +3,52 @@
 #reordenable tr {
     cursor: move;
 }
+
+.lm-grid
+{
+    display:grid;
+    grid-template-columns: repeat(3, 200px);
+    gap:10px;
+}
+
+.lm-card{
+    padding: 10px;
+    border-radius:7px;
+    background: #fff;
+}
+
+.lm-card-title {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.lm-card:nth-child(1)
+{
+    border:2px solid blue;
+    color: blue;
+}
+
+.lm-card:nth-child(2) {
+    /*background: #F5F9FC;*/
+    border:2px solid red;
+    color:red;
+}
+
+.lm-card:nth-child(3) {
+    border: 2px solid black;
+    color:black;
+}
+
+.lm-card-dollar
+{
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.activo{
+    color:darkslategray;
+}
+
+.pasivo{
+    color:red;
+}

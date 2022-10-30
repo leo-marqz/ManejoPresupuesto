@@ -1,0 +1,84 @@
+﻿@model IEnumerable<IndiceCuentasViewModel>
+@{
+    ViewData["Title"] = "Cuentas";
+
+    string FormateoBalance(decimal balance)
+    {
+        return Math.Abs(balance).ToString("N");
+    }
+
+    string TipoBalance(decimal balance)
+    {
+        return balance > 0 ? "activo" : "pasivo";
+    }
+}
+
+<h1>Cuentas</h1>
+
+<a asp-action="Crear" class="my-3 btn btn-primary">Crear Cuenta</a>
+
+<section class="lm-grid">
+    <div class="lm-card">
+        <strong class="lm-card-title">Activos</strong>
+        <p class="lm-card-data">
+            <span class="lm-card-dollar">$</span>
+            @FormateoBalance(Model.Where(x=>x.Balance > 0).Sum(x=>x.Balance))
+        </p>
+    </div>
+    <div class="lm-card">
+        <strong class="lm-card-title">Pasivos</strong>
+        <p class="lm-card-data">
+            <span class="lm-card-dollar">$</span>
+            @FormateoBalance(Model.Where(x=>x.Balance < 0).Sum(x=>x.Balance))
+        </p>
+    </div>
+    <div class="lm-card">
+        <strong class="lm-card-title">Total</strong>
+        <p class="lm-card-data">
+            <span class="lm-card-dollar">$</span>
+            @FormateoBalance(Model.Sum(x=>x.Balance))
+        </p>
+    </div>
+</section>
+
+
+<section>
+    <div class="accordion mt-3" id="accordionPanelsStayOpenExample">
+        @foreach(var tipoCuenta in Model)
+        {
+            var idItemHeader = tipoCuenta.TipoCuenta;
+            var idItemHeaderTarget = "#" + idItemHeader;
+            var idItemBody = tipoCuenta.TipoCuenta + Guid.NewGuid();
+            var idItemBodyTarget = "#" + idItemBody;
+
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="@idItemHeader">
+                    <button class="accordion-button text-primary fw-bold" type="button"
+                        data-bs-toggle="collapse" data-bs-target="@idItemBodyTarget"
+                        aria-expanded="true" aria-controls="@idItemHeader">
+                        @tipoCuenta.TipoCuenta - <span class="@TipoBalance(tipoCuenta.Cuentas.Sum(x=>x.Balance))">
+                            <span>$</span>@FormateoBalance(tipoCuenta.Cuentas.Sum(x=>x.Balance))
+                        </span>
+                    </button>
+                </h2>
+                <div id="@idItemBody" class="accordion-collapse collapse show" aria-labelledby="@idItemHeader">
+                    <div class="accordion-body">
+                        <ol>
+                            @foreach (var cuenta in tipoCuenta.Cuentas)
+                            {
+                                <li>
+                                    <div> <strong>@cuenta.Nombre</strong> - <span class="@TipoBalance(cuenta.Balance)">
+                                            <span>$</span>@FormateoBalance(cuenta.Balance)
+                                        </span>
+                                    </div>  
+                                    <p>@cuenta.Descripcion</p>
+                                </li>
+                            }
+                        </ol>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

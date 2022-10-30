@@ -8,6 +8,7 @@ builder.Services.AddRouting(router => router.LowercaseUrls = true);
 
 builder.Services.AddTransient<IRepositorioTiposCuentas, RepositorioTiposCuentas>();
 builder.Services.AddTransient<IServicioUsuarios, ServicioUsuarios>();
+builder.Services.AddTransient<IRepositorioCuentas, RepositorioCuentas>();
 
 var app = builder.Build();
 

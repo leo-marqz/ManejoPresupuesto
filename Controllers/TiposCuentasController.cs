@@ -62,8 +62,9 @@ namespace ManejoPresupuesto.Controllers
         public async Task<ActionResult> Editar(TipoCuenta tipoCuenta)
         {
             var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
-            var tipoCuentaExiste = await repositorioTiposCuentas.ObtenerPorId(tipoCuenta.Id, usuarioId);
-            if(tipoCuenta is null)
+            TipoCuenta tipoCuentaExiste = await repositorioTiposCuentas
+                .ObtenerPorId(tipoCuenta.Id, usuarioId);
+            if(tipoCuentaExiste is null)
             {
                 return RedirectToAction("NoEncontrado", "Home");
             }
