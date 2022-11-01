@@ -66,12 +66,19 @@
                         <ol>
                             @foreach (var cuenta in tipoCuenta.Cuentas)
                             {
-                                <li>
+                                <li class="my-1">
                                     <div> <strong>@cuenta.Nombre</strong> - <span class="@TipoBalance(cuenta.Balance)">
                                             <span>$</span>@FormateoBalance(cuenta.Balance)
                                         </span>
+                                        <span class="mx-1">
+                                            <a asp-action="Editar" asp-route-id="@cuenta.Id" class="btn btn-success btn-sm">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <a asp-action="Eliminar" asp-route-id="@cuenta.Id" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </span>
                                     </div>  
-                                    <p>@cuenta.Descripcion</p>
                                 </li>
                             }
                         </ol>
