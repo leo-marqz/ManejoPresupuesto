@@ -1,0 +1,35 @@
+﻿@model Categoria
+
+@{
+    ViewData["Title"] = "Editar Categoria";
+}
+
+<h1>Editar Categoria</h1>
+<h5>
+    Las categorias nos permiten indicar en que gastamos(Egresos) nuestro dinero,
+    y de donde provienen nuestros ingresos.
+</h5>
+
+<section>
+    <form asp-controller="Categorias" asp-action="Editar">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="mb-3">
+            <label asp-for="Nombre" class="form-label"></label>
+            <input type="text" asp-for="Nombre" class="form-control" />
+            <span asp-validation-for="Nombre" class="text-danger"></span>
+        </div>
+        <div class="mb-3">
+            <label asp-for="TipoOperacionId" class="form-label"></label>
+            <select asp-for="TipoOperacionId" asp-items="Html.GetEnumSelectList<TipoOperacion>()"
+                    class="form-select"></select>
+            <span asp-validation-for="TipoOperacionId" class="text-danger"></span>
+        </div>
+        <input type="submit" value="Enviar" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
