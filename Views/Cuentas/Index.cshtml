@@ -67,7 +67,12 @@
                             @foreach (var cuenta in tipoCuenta.Cuentas)
                             {
                                 <li class="my-1">
-                                    <div> <strong>@cuenta.Nombre</strong> - <span class="@TipoBalance(cuenta.Balance)">
+                                    <div>
+                                        <strong>
+                                            <a asp-action="Detalle" asp-route-id="@cuenta.Id">
+                                                @cuenta.Nombre
+                                            </a>
+                                            </strong> - <span class="@TipoBalance(cuenta.Balance)">
                                             <span>$</span>@FormateoBalance(cuenta.Balance)
                                         </span>
                                         <span class="mx-1">

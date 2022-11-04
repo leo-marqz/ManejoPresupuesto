@@ -20,5 +20,10 @@ namespace ManejoPresupuesto.Models
         public decimal Monto { get; set; }
         [StringLength(maximumLength:1000 , ErrorMessage = "El campo {1} notas no puede contener mas de 1,000 caracteres")]
         public string Nota { get; set; }
+
+        [Display(Name = "Tipo Operación")]
+        public TipoOperacion TipoOperacionId { get; set; } = TipoOperacion.Egreso;
+        public string Cuenta { get; set; }
+        public string Categoria { get; set; }
     }
 }

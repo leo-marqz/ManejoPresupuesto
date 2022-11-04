@@ -11,6 +11,14 @@
     gap:10px;
 }
 
+.lm-empty
+{
+    background: #c4c4c4;
+    border-radius: 7px;
+    padding: 10px;
+    color: white;
+}
+
 .lm-card{
     padding: 10px;
     border-radius:7px;

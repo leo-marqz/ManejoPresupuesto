@@ -1,23 +1,25 @@
-﻿@model TransaccionCreacionViewModel
-
+﻿
+@model TransaccionActualizacionViewModel
 @{
-    ViewData["Title"] = "Crear nueva transacción";
+    ViewData["Title"] = "Editar Transacción";
+    var linkCancelar = Model.UrlRetorno ?? Url.Action("Index");
 }
 
-<h1>Crear una nueva transacción</h1>
-<h5 > 
-    Una transacción te permite indicar tus ingresos y gastos
-</h5>
+<h1>Editar Transacción</h1>
 
 <section>
-    <form asp-controller="Transacciones" asp-action="Crear">
+    <form asp-controller="Transacciones" asp-action="Actualizar">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="MontoAnterior" />
+        <input type="hidden" asp-for="CuentaAnteriorId" />
+        <input type="hidden" asp-for="UrlRetorno" />
         <div class="mb-3">
             <label asp-for="FechaTransaccion" class="form-label"></label>
             <input asp-for="FechaTransaccion" class="form-control" />
             <span asp-validation-for="FechaTransaccion" class="text-danger"></span>
         </div>
-        <div class="mb-3" >
+        <div class="mb-3">
             <label asp-for="CuentaId" class="form-label"></label>
             <select class="form-select" asp-for="CuentaId" asp-items="Model.Cuentas"></select>
             <span asp-validation-for="CuentaId" class="text-danger"></span>
@@ -38,23 +40,23 @@
             <span asp-validation-for="Monto" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <label asp-for="Nota" class="form-label" ></label>
-            <textarea asp-for="Nota" class="form-control" ></textarea>
+            <label asp-for="Nota" class="form-label"></label>
+            <textarea asp-for="Nota" class="form-control"></textarea>
             <span asp-validation-for="Nota" class="text-danger"></span>
         </div>
-        <button type="submit" class="btn btn-primary" >Enviar</button>
-        <a asp-action="Index" class="btn btn-secondary" >Cancelar</a>
+        <button type="submit" class="btn btn-primary">Actualizar</button>
+        <button class="btn btn-danger" asp-action="Eliminar">Eliminar</button>
+        <a href="@linkCancelar" class="btn btn-secondary">Cancelar</a>
     </form>
 </section>
 
 @section Scripts{
     <partial name="_ValidationScriptsPartial" />
-
     <script src="~/js/FormularioTransacciones.js" asp-append-version="true"></script>
     <script>
         const url = '@Url.Action("ObtenerCategorias")';
 
-        $(function () {
+        $(function(){
             InicializarFormularioTransaccion(url);
         });
 

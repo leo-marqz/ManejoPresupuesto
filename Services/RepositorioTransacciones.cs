@@ -6,7 +6,11 @@ namespace ManejoPresupuesto.Services
 {
     public interface IRepositorioTransacciones
     {
+        Task Actualizar(Transaccion transaccion, decimal montoAnterior, int cuentaAnterior);
         Task Crear(Transaccion transaccion);
+        Task Eliminar(int id);
+        Task<IEnumerable<Transaccion>> ObtenerPorCuentaId(ObtenerTransaccionesPorCuenta modelo);
+        Task<Transaccion> ObtenerPorId(int id, int usuarioId);
     }
 
     public class RepositorioTransacciones : IRepositorioTransacciones
@@ -31,5 +35,49 @@ namespace ManejoPresupuesto.Services
                     transaccion.Nota
                 }, commandType: System.Data.CommandType.StoredProcedure);
         }
+
+        public async Task Actualizar(Transaccion transaccion, decimal montoAnterior, int cuentaAnteriorId)
+        {
+            using var connection = new SqlConnection(this.connectionString);
+            await connection.ExecuteAsync("Transaccion_Actualizar", new
+            {
+                transaccion.Id, transaccion.FechaTransaccion, transaccion.Monto,
+                transaccion.CategoriaId, transaccion.CuentaId, transaccion.Nota,
+                montoAnterior,
+                cuentaAnteriorId
+            }, commandType: System.Data.CommandType.StoredProcedure);
+        }
+
+        public async Task<Transaccion> ObtenerPorId(int id, int usuarioId)
+        {
+            using var connection = new SqlConnection(this.connectionString);
+            var query = "SELECT transacciones.*, cat.TipoOperacionId " +
+                "FROM Transacciones INNER JOIN Categorias cat " +
+                "ON cat.Id = Transacciones.CategoriaId " +
+                "WHERE Transacciones.Id = @Id AND Transacciones.UsuarioId = @UsuarioId";
+            return await connection.QueryFirstOrDefaultAsync<Transaccion>(query, new {id, usuarioId});
+        }
+
+        public async Task Eliminar(int id)
+        {
+            using var connection = new SqlConnection(this.connectionString);
+            await connection.ExecuteAsync("Transaccion_Eliminar", new { id },
+                commandType: System.Data.CommandType.StoredProcedure);
+        }
+
+        public async Task<IEnumerable<Transaccion>> ObtenerPorCuentaId(
+            ObtenerTransaccionesPorCuenta modelo)
+        {
+            using var connection = new SqlConnection(this.connectionString);
+            var query = "SELECT tr.Id, tr.Monto, tr.FechaTransaccion, cg.Nombre AS Categoria," +
+                " ct.Nombre AS Cuenta, cg.TipoOperacionId " +
+                "FROM Transacciones tr " +
+                "INNER JOIN Categorias cg ON cg.Id = tr.CategoriaId" +
+                " INNER JOIN Cuentas ct ON ct.Id = tr.CuentaId " +
+                "WHERE tr.CuentaId = @CuentaId AND tr.UsuarioId = @UsuarioId " +
+                "AND FechaTransaccion BETWEEN @FechaInicio AND @FechaFin";
+            return await connection.QueryAsync<Transaccion>(query, modelo);
+        }
+
     }
 }
