@@ -15,21 +15,28 @@ namespace ManejoPresupuesto.Controllers
         private readonly IRepositorioCuentas repositorioCuentas;
         private readonly IRepositorioCategorias repositorioCategorias;
         private readonly IMapper mapper;
+        private readonly IServicioReportes servicioReportes;
 
         public TransaccionesController(IRepositorioTransacciones repositorioTransacciones, 
             IServicioUsuarios servicioUsuarios, IRepositorioCuentas repositorioCuentas, 
-            IRepositorioCategorias repositorioCategorias, IMapper mapper)
+            IRepositorioCategorias repositorioCategorias, IMapper mapper,
+            IServicioReportes servicioReportes
+            )
         {
             this.repositorioTransacciones = repositorioTransacciones;
             this.servicioUsuarios = servicioUsuarios;
             this.repositorioCuentas = repositorioCuentas;
             this.repositorioCategorias = repositorioCategorias;
             this.mapper = mapper;
+            this.servicioReportes = servicioReportes;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int mes, int año)
         {
-            return View();
+            var usuarioId = servicioUsuarios.ObtenerUsuarioId();
+            var modelo = await servicioReportes
+                .ObtenerReporteTransaccionesDetallas(usuarioId, mes, año, ViewBag);
+            return View(modelo);
         }
 
         [HttpGet]

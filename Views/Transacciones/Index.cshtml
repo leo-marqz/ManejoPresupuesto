@@ -1,10 +1,10 @@
 ﻿
 @{
-    ViewData["Title"] = "Transacciones";
+    ViewData["Title"] = "Reporte diario de transacciones";
 }
 
 <h1>Transacciones</h1>
 
 <a asp-action="Crear" class="btn btn-primary my-3" >Crear nueva transacción</a>
 
-
+<partial name="_ReporteTransaccionesDetalladas" model="Model" />
