@@ -5,9 +5,18 @@
 
     string FormatearFecha(DateTime fecha) => fecha.ToString("MM.dd");
     string FormatearMoneda(decimal dato) => $"${dato.ToString("N")}";
+
+    var resumenMontos = new ResumenMontosViewModel()
+    {
+        Ingresos = Model.Ingresos,
+        Egresos = Model.Egresos,
+        Total = Model.Total
+    };
 }
 
 <partial name="_SubMenu" model="SubMenuTransacciones.Semanal" />
+<partial name="_ResumenMontos" model="@resumenMontos" />
+<partial name="_NavegarPorMeses" model="@Model.FechaReferencia" />
 
 <table class="table" style="font-size: 20px;">
     <thead>

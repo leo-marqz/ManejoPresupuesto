@@ -1,5 +1,55 @@
-﻿@{
+﻿@model ReporteMensualViewModel
+@{
     ViewData["Title"] = "Reporte Mensual";
+
+    int añoAnterior = Model.Año - 1;
+    int añoPosterior = Model.Año + 1;
+
+    var resumenMontos = new ResumenMontosViewModel()
+            {
+                Ingresos = Model.Ingresos,
+                Egresos = Model.Egresos,
+                Total = Model.Total
+            };
+
+    string FormatearMoneda(decimal dato) => $"${dato.ToString("N")}";
 }
 
 <partial name="_SubMenu" model="SubMenuTransacciones.Mensual" />
+<partial name="_ResumenMontos" model="@resumenMontos" />
+<h4>
+    <a asp-route-año="@añoAnterior" class="btn btn-secondary">
+        <i class="bi-chevron-left"></i>
+    </a>
+    @Model.Año
+    <a asp-route-año="@añoPosterior" class="btn btn-secondary">
+        <i class="bi-chevron-right"></i>
+    </a>
+</h4>
+
+<table class="table">
+    <thead>
+        <tr class="bg-light">
+            <th>Mes</th>
+            <th style="text-align: right">Ingresos</th>
+            <th style="text-align: right">Egresos</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var transacciones in Model.TransaccionesPorMes)
+        {
+            <tr>
+                <td>
+                    <a class="text-decoration-none" asp-action="Index" 
+                        asp-route-año="@Model.Año" asp-route-mes="@transacciones.Mes"
+                    >
+                        @transacciones.FechaReferencia.ToString("MM")
+                    </a>
+                </td>
+                <td style="text-align: right" class="text-primary">@FormatearMoneda(transacciones.Ingreso)</td>
+                <td style="text-align: right" class="text-danger">@FormatearMoneda(transacciones.Egreso)</td>
+            </tr>
+        }
+    </tbody>
+</table>
+

@@ -9,6 +9,7 @@
     display:grid;
     grid-template-columns: repeat(3, 200px);
     gap:10px;
+    margin: 20px 0px;
 }
 
 .lm-empty

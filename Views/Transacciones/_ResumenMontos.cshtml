@@ -1,0 +1,33 @@
+﻿@model ResumenMontosViewModel
+
+@{
+    string FormateoMoneda(decimal dato)
+    {
+        return $"${dato.ToString("N")}";
+    }
+}
+
+<div class="mb-3">
+    <section class="lm-grid">
+
+        <div class="lm-card">
+            <strong>Depositos</strong>
+            <div class="">
+                @FormateoMoneda(Model.Ingresos)
+            </div>
+        </div>
+        <div class="lm-card">
+            <strong>Retiros</strong>
+            <div class="">
+                @FormateoMoneda(Model.Egresos)
+            </div>
+        </div>
+        <div class="lm-card">
+            <strong>Total</strong>
+            <div class="">
+                @FormateoMoneda(Model.Total)
+            </div>
+        </div>
+    </section>
+</div>
+
