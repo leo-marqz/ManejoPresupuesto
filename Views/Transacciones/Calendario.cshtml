@@ -3,3 +3,108 @@
 }
 
 <partial name="_SubMenu" model="SubMenuTransacciones.Calendario" />
+
+
+
+<div id="calendario"></div>
+
+<div class="modal fade" id="modalTransacciones" tabindex="-1" >
+    <div class="modal-dialog modal-dialog-centered ">
+        <div class="model-content bg-light">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    Transacciones del dia
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table ">
+                    <thead>
+                        <tr>
+                            <th id="modalTablaFecha" colspan="2"></th>
+                            <th id="modalTablaIngresos" class="text-primary"></th>
+                            <th id="modalTablaEgresos" class="text-danger"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalTablaCuerpo">
+
+                    </tbody>
+                    <div class="modal-footer" >
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            Cerrar
+                        </button>
+                    </div>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script src="~/lib/fullcalendar/main.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function(){
+            const divCalendario = document.getElementById("calendario");
+            const calendario = new FullCalendar.Calendar(divCalendario, {
+                dayMaxEventRows: 3,
+                initialView: 'dayGridMonth',
+                events: '/transacciones/ObtenerTransaccionesCalendario',
+                dateClick: async function(info){
+                    await buscarTransaccionesPorFecha(info.dateStr);
+                }
+            });
+            calendario.render();
+        });
+
+        async function buscarTransaccionesPorFecha(fecha)
+        {
+            const response = await fetch(`/transacciones/ObtenerTransaccionesPorFecha?fecha=${fecha}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            console.log(data[0].monto)
+            let ingresos = 0;
+            let egresos = 0;
+            const tipoOperacionIngresos = 1;
+            const formateadorMoneda = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD'
+            });
+
+            const filas = data.map(transaccion=>{
+                if(transaccion.tipoOperacionId === tipoOperacionIngresos)
+                {
+                    ingresos += transaccion.monto;
+                }else
+                {
+                    egresos += transaccion.monto;
+                }
+                console.log(`ingresos: ${ingresos} y egresos: ${egresos}`)
+                let tipoOperacion = transaccion.tipoOperacionId === tipoOperacionIngresos ? 
+                    'text-primary' : 'text-danger';
+                return `
+                    <tr>
+                        <td>${transaccion.categoria}</td>
+                        <td>${transaccion.cuenta}</td>
+                        <td class='${tipoOperacion}' align='right' colspan='2'>
+                            ${formateadorMoneda.format(transaccion.monto)}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            $("#modalTablaCuerpo").html(filas);
+            $("#modalTablaIngresos").text(formateadorMoneda.format(ingresos));
+            $("#modalTablaEgresos").text(formateadorMoneda.format(egresos));
+            $("#modalTablaFecha").text(fecha);
+
+            const modal = new bootstrap.Modal(document.getElementById('modalTransacciones'));
+            modal.show();
+        }
+    </script>
+}
