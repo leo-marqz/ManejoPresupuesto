@@ -4,6 +4,7 @@ namespace ManejoPresupuesto.Services
 {
     public interface IServicioReportes
     {
+        Task<IEnumerable<ResultadoObtenerPorSemana>> ObtenerReporteSemanal(int usuarioId, int mes, int año, dynamic ViewBag);
         Task<ReporteTransaccionesDetalladas> ObtenerReporteTransaccionesDetalladasPorCuenta(int usuarioId, int cuentaId, int mes, int año, dynamic viewBag);
         Task<ReporteTransaccionesDetalladas> ObtenerReporteTransaccionesDetallas(int usuarioId, int mes, int año, dynamic ViewBag);
     }
@@ -21,6 +22,22 @@ namespace ManejoPresupuesto.Services
             this.httpContext = httpContextAccessor.HttpContext;
         }
 
+        public async Task<IEnumerable<ResultadoObtenerPorSemana>> ObtenerReporteSemanal(
+            int usuarioId, int mes, int año, dynamic ViewBag
+            )
+        {
+            (DateTime fechaInicio, DateTime fechaFin) = GenerarFechaInicioYFin(mes, año);
+            var parametro = new ParametroObtenerTransaccionesPorUsuario()
+            {
+                UsuarioId = usuarioId,
+                FechaInicio = fechaInicio,
+                FechaFin = fechaFin
+            };
+            AsignarValoresAlViewBag(ViewBag, fechaInicio, fechaFin);
+            var modelo = await repositorioTransacciones.ObtenerPorSemana(parametro);
+            return modelo;
+        }
+
         public async Task<ReporteTransaccionesDetalladas> ObtenerReporteTransaccionesDetallas(
             int usuarioId, int mes, int año, dynamic ViewBag
             )
@@ -34,7 +51,7 @@ namespace ManejoPresupuesto.Services
             };
             var transacciones = await repositorioTransacciones.ObtenerPorUsuarioId(parametro);
             var modelo = GenerarReporteTransaccionesDetalladas(fechaInicio, fechaFin, transacciones);
-            AasignarValoresAlViewBag(ViewBag, fechaInicio, fechaFin);
+            AsignarValoresAlViewBag(ViewBag, fechaInicio, fechaFin);
             return modelo;
         }
 
@@ -53,12 +70,12 @@ namespace ManejoPresupuesto.Services
             var transacciones = await repositorioTransacciones
                 .ObtenerPorCuentaId(obtenerTransaccionesPorCuenta);
             var modelo = GenerarReporteTransaccionesDetalladas(fechaInicio, fechaFin, transacciones);
-            AasignarValoresAlViewBag(ViewBag, fechaInicio, fechaFin);
+            AsignarValoresAlViewBag(ViewBag, fechaInicio, fechaFin);
 
             return modelo;
         }
 
-        private void AasignarValoresAlViewBag(dynamic ViewBag, DateTime fechaInicio, DateTime fechaFin)
+        private void AsignarValoresAlViewBag(dynamic ViewBag, DateTime fechaInicio, DateTime fechaFin)
         {
             ViewBag.mesAnterior = fechaInicio.AddMonths(-1).Month;
             ViewBag.añoAnterior = fechaFin.AddMonths(-1).Year;
