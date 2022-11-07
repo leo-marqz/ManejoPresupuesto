@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Categoria>
+﻿@model PaginacionRespuesta<Categoria>
 @{
     ViewData["Title"] = "Categorias";
 }
@@ -10,6 +10,8 @@
 
 <a asp-controller="Categorias" asp-action="Crear" class="btn btn-primary my-3">Crear nueva categoria</a>
 
+<partial name="_Paginacion" />
+
 <table class="table table-striped">
     <thead class="bg-dark text-white">
         <tr>
@@ -19,7 +21,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var categoria in Model)
+        @foreach(var categoria in Model.Elementos)
         {
             <tr>
                 <td>@categoria.Nombre</td>

@@ -3,7 +3,7 @@
     public class PaginacionViewModel
     {
         public int Pagina { get; set; } = 1;
-        private int recordPorPagina { get; set; }
+        private int recordPorPagina = 10;
         private readonly int cantidadMaximaRecordsPorPagina = 50;
 
         public int RecordsPorPagina { 

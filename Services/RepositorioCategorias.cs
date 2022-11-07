@@ -7,6 +7,7 @@ namespace ManejoPresupuesto.Services
     public interface IRepositorioCategorias
     {
         Task Actualizar(Categoria categoria);
+        Task<int> Contar(int usuarioId);
         Task Crear(Categoria categoria);
         Task Eliminar(int id);
         Task<IEnumerable<Categoria>> Obtener(int usuarioId, PaginacionViewModel paginacion);
@@ -68,6 +69,13 @@ namespace ManejoPresupuesto.Services
             using var connection = new SqlConnection(this.connectionString);
             var query = "DELETE Categorias WHERE Id = @Id";
             await connection.ExecuteAsync(query, new { id });
+        }
+
+        public async Task<int> Contar(int usuarioId)
+        {
+            using var connection = new SqlConnection(this.connectionString);
+            var query = "SELECT COUNT(*) FROM Categorias WHERE UsuarioId = @UsuarioId";
+            return await connection.ExecuteScalarAsync<int>(query, new {usuarioId });
         }
     }
 }

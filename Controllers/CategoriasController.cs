@@ -20,7 +20,18 @@ namespace ManejoPresupuesto.Controllers
         {
             var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
             var categorias = await this.repositorioCategorias.Obtener(usuarioId, paginacion);
-            return View(categorias);
+            var totalCategorias = await repositorioCategorias.Contar(usuarioId);
+
+            var respuestaVM = new PaginacionRespuesta<Categoria>
+            {
+                Elementos = categorias,
+                Pagina = paginacion.Pagina,
+                RecordsPorPagina = paginacion.RecordsPorPagina,
+                CantidadTotalRecords = totalCategorias,
+                BaseUrl = "/categorias"
+            };
+
+            return View(respuestaVM);
         }
 
         [HttpGet]

@@ -1,0 +1,17 @@
+﻿namespace ManejoPresupuesto.Models
+{
+    public class PaginacionRespuesta
+    {
+        public int Pagina { get; set; } = 1;
+        public int RecordsPorPagina { get; set; } = 10;
+        public int CantidadTotalRecords { get; set; }
+        //records => 100 / 5 = 20 paginas
+        public int CantidadTotalDePaginas => (int)Math.Ceiling((double)CantidadTotalRecords / RecordsPorPagina);
+        public string BaseUrl { get; set; }
+    }
+
+    public class PaginacionRespuesta<T> : PaginacionRespuesta
+    {
+        public IEnumerable<T> Elementos { get; set; }
+    }
+}
