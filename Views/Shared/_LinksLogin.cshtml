@@ -1,5 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> SingInManager
+
+
+<ul class="navbar list-unstyled">
+    @if (SingInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            <span class="nav-link text-dark">Hola, @User.Identity.Name</span>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-action="logout" asp-controller="usuarios">
+                <button type="submit" class="nav-link btn btn-link text-danger">
+                    Logout
+                </button>
+            </form>
+        </li>
+    }else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-action="Registro" asp-controller="usuarios">Registro</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-action="Login" asp-controller="usuarios">Login</a>
+        </li>
+    }
+</ul>

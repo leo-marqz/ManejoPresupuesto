@@ -16,10 +16,10 @@ namespace ManejoPresupuesto.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(PaginacionViewModel paginacion)
         {
             var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
-            var categorias = await this.repositorioCategorias.Obtener(usuarioId);
+            var categorias = await this.repositorioCategorias.Obtener(usuarioId, paginacion);
             return View(categorias);
         }
 

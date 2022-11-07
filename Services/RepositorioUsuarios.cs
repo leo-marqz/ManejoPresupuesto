@@ -24,8 +24,12 @@ namespace ManejoPresupuesto.Services
             using var connection = new SqlConnection(this.connectionString);
             var query = "INSERT INTO Usuarios(Email, EmailNormalizado, PasswordHash) " +
                 "VALUES(@Email, @EmailNormalizado, @PasswordHash); SELECT SCOPE_IDENTITY();";
-            var id = await connection.QuerySingleAsync<int>(query, usuario);
-            return id;
+            var usuarioId = await connection.QuerySingleAsync<int>(query, usuario);
+
+            await connection.ExecuteAsync("CrearDatosDefectoAUsuarioNuevo",
+                new { usuarioId }, commandType: System.Data.CommandType.StoredProcedure);
+
+            return usuarioId;
         }
 
         public async Task<Usuario> BuscarUsuarioPorEmail(string emailNormalizado)

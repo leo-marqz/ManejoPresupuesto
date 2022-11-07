@@ -1,11 +1,22 @@
 using ManejoPresupuesto.Models;
 using ManejoPresupuesto.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+var politicaUsuariosAutenticados = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add(new AuthorizeFilter(politicaUsuariosAutenticados));
+});
+
 builder.Services.AddRouting(router => router.LowercaseUrls = true);
 
 builder.Services.AddTransient<IRepositorioTiposCuentas, RepositorioTiposCuentas>();
@@ -24,14 +35,18 @@ builder.Services.AddAuthentication(options =>
     options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
     options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
     options.DefaultSignOutScheme = IdentityConstants.ApplicationScheme;
-}).AddCookie(IdentityConstants.ApplicationScheme); //autenticacion y uso de cookies
+}).AddCookie(IdentityConstants.ApplicationScheme, options =>
+{
+    options.LoginPath = "/usuarios/login";
+}); //autenticacion y uso de cookies
+
+builder.Services.AddTransient<SignInManager<Usuario>>();
 //builder.Services.AddIdentityCore<Usuario>(options =>
 //{
 //    options.Password.RequireNonAlphanumeric = true;
 //    options.Password.RequireLowercase = true;
 //    options.Password.RequireUppercase = true;
 //});
-
 
 var app = builder.Build();
 
