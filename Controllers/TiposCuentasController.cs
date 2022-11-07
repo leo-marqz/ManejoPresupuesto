@@ -93,12 +93,6 @@ namespace ManejoPresupuesto.Controllers
         }
 
 
-        [HttpPut]
-        public async Task<IActionResult> Actualizar()
-        {
-            return Ok();
-        }
-
         public async Task<IActionResult>Eliminar(int id)
         {
             var usuarioId = this.servicioUsuarios.ObtenerUsuarioId();
